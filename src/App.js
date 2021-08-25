@@ -1,13 +1,13 @@
 import ColorBox from './components/ColorBox';
-import ColorContext from './contexts/color';
+import { ColorProvider } from './contexts/color_advanced';
 
 function App() {
   return (
-    <ColorContext.Provider value={{ color: 'tomato' }}>
+    <ColorProvider>
       <div>
         <ColorBox />
       </div>
-    </ColorContext.Provider>
+    </ColorProvider>
   );
 }
 

@@ -1,13 +1,20 @@
-import ColorContext from '../contexts/color';
+import { ColorConsumer } from '../contexts/color_advanced';
 
 const ColorBox = () => {
   return (
-    <ColorContext.Consumer>
+    <ColorConsumer>
       {/* Function as a child(Render Props) */}
       {(value) => (
-        <div style={{ width: 64, height: 64, background: value.color }} />
+        <>
+          <div
+            style={{ width: 64, height: 64, background: value.state.color }}
+          />
+          <div
+            style={{ width: 32, height: 32, background: value.state.subcolor }}
+          />
+        </>
       )}
-    </ColorContext.Consumer>
+    </ColorConsumer>
   );
 };
 
