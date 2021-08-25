@@ -125,7 +125,7 @@ Also, as we saw above, even if Provider is omitted, no error occurs.
   export default ColorBox;
   ```
 
-  - `Context Provider : Where your app manage state globally`
+- `Context Provider : Where your app manage state globally`
   ```js
   import ColorBox from './components/ColorBox';
   import { ColorProvider } from './contexts/color_advanced';
@@ -141,4 +141,33 @@ Also, as we saw above, even if Provider is omitted, no error occurs.
   }
 
   export default App;
+  ```
+
+### Usage
+  ```js
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+
+  const SelectColors = () => {
+    return (
+      <div>
+        <h2>Choose a color.</h2>
+        <div style={{ display: 'flex' }}>
+          {colors.map((color) => (
+            <div
+              key={color}
+              style={{
+                background: color,
+                width: 24,
+                height: 24,
+                cursor: 'pointer',
+              }}
+            />
+          ))}
+        </div>
+        <hr />
+      </div>
+    );
+  };
+
+  export default SelectColors;
   ```
