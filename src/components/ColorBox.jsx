@@ -6,6 +6,7 @@ const ColorBox = () => {
       {/* Function as a child(Render Props) */}
       {(value) => (
         <>
+          <h4 style={{ marginTop: 48 }}>ColorBox with pure context</h4>
           <div
             style={{ width: 64, height: 64, background: value.state.color }}
           />

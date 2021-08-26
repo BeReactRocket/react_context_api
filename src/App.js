@@ -1,13 +1,17 @@
 import ColorBox from './components/ColorBox';
-import SelectColors from './components/SelectColors';
+import ColorBoxCC from './components/ColorBoxCC';
+import ColorBoxHooks from './components/ColorBoxHooks';
+import Header from './components/Header';
 import { ColorProvider } from './contexts/color_advanced';
 
 function App() {
   return (
     <ColorProvider>
       <div>
-        <SelectColors />
+        <Header />
         <ColorBox />
+        <ColorBoxHooks />
+        <ColorBoxCC />
       </div>
     </ColorProvider>
   );

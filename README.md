@@ -3,6 +3,19 @@
 ## Basic Concepts
 
 <br>
+React assembles an application from multiple components.
+
+How can we share the same data, such as login status, between components that are far away from each other?
+
+The key is that "many" components are "far" apart from each other. If it's close, you can just pass it as props.
+
+However, if you use props, there are a lot of components that needlessly pass through without using them in the middle when data is used globally. This makes data state management and maintenance difficult.
+
+What you need at this point is contextAPI. contextAPI manages data in a component-independent space, so you can get or set data wherever you really need it.
+
+When using contextAPI, remember 3 factors:
+
+<br>
 
 - `Context Store : Where you initialize context`
   ```js
@@ -194,7 +207,7 @@ To actually "consume" the Context, as shown below, let's import a `Consumer` and
 
 And note that in `Consumer`, it is written in the form of "Function as a child".
 
-`Consumer`s is a bit smarter than you think.
+`Consumer` is a bit smarter than you think.
 
 This is because the value we passed as an argument of `React.createContext` or value props of the `Provider` is remembered as it is.
 
@@ -244,3 +257,158 @@ So you can make your code simpler using destructuring like this:
   While `onClick` is an event handler that detects a left mouse click, `onContextMenu` is an event handler that detects a right mouse click.
   
   Since `onContextMenu` outputs the browser menu by default, let's use `preventDefault` so that the function that changes your color can be executed instead of the browser menu.
+
+<br>
+
+---
+<br>
+
+## Mastery
+<br>
+
+Now we come to the master stage of contextAPI.
+
+So far we've been using the slightly raw API. Function as a child is less intuitive and the code is a bit longer.
+
+In this case, React.useContext of functional component hooks and static contextType of class component help make the code more concise and intuitive.
+
+## `React.useContext` X `Functional Component`
+`useContext` allows you to replace complex logic like `Consumer`.
+
+However, since this is hooks, it can only be used in functional components.
+
+- Get State
+  ```js
+  import { useContext } from 'react';
+  import ColorContext from '../contexts/color_advanced';
+
+  const ColorBox2 = () => {
+    const { state } = useContext(ColorContext);
+    return (
+      <>
+        <div style={{ width: 64, height: 64, background: state.color }} />
+        <div style={{ width: 32, height: 32, background: state.subcolor }} />
+      </>
+    );
+  };
+
+  export default ColorBox2;
+  ```
+- Set State
+  ```js
+  import { useContext } from 'react';
+  import ColorContext from '../contexts/color_advanced';
+
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+
+  export default function SelectColorsHooks() {
+    const { actions } = useContext(ColorContext);
+    console.log(actions);
+    return (
+      <div>
+        <h2>Choose a color.(useContext)</h2>
+        <div style={{ display: 'flex' }}>
+          {colors.map((color) => (
+            <div
+              key={color}
+              style={{
+                width: 24,
+                height: 24,
+                background: color,
+                cursor: 'pointer',
+              }}
+              onClick={() => actions.setColor(color)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                actions.setSubcolor(color);
+              }}
+            />
+          ))}
+        </div>
+        <hr />
+      </div>
+    );
+  }
+  ```
+
+## `static contextType` X `Class Component`
+
+If `contextType` is defined as a static property by using the `static` keyword, an instance of this class can be accessed through the `this.context` keyword.
+
+To do this, we need to assign our custom `Context` to a `static contextType`.
+
+- Get State
+  ```js
+  import { Component } from 'react';
+  import ColorContext from '../contexts/color_advanced';
+
+  export default class ColorBoxCC extends Component {
+    static contextType = ColorContext;
+    render() {
+      return (
+        <>
+          <h4 style={{ marginTop: 64 }}>ColorBox with static contextType</h4>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              background: this.context.state.color,
+            }}
+          />
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              background: this.context.state.subcolor,
+            }}
+          />
+        </>
+      );
+    }
+  }
+  ```
+- Set State
+  ```js
+  import { Component } from 'react';
+  import ColorContext from '../contexts/color_advanced';
+
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+
+  export default class SelectColorsCC extends Component {
+    static contextType = ColorContext;
+
+    render() {
+      console.log(this.context);
+      return (
+        <div>
+          <h2>Choose a color.(static contextType)</h2>
+          <div style={{ display: 'flex' }}>
+            {colors.map((color) => (
+              <div
+                key={color}
+                style={{
+                  width: 24,
+                  height: 24,
+                  background: color,
+                  cursor: 'pointer',
+                }}
+                onClick={() => this.context.actions.setColor(color)}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  this.context.actions.setSubcolor(color);
+                }}
+              />
+            ))}
+          </div>
+          <hr />
+        </div>
+      );
+    }
+  }
+  ```
+
+  As we saw above, useContext hooks and static contextType make code more beautiful in functional and class components, respectively.
+  
+   But the big downside is that you can only have one contextType per class.
+   
+   So let's use a combination of functional components and useContext hooks as recommended by the react team.
